@@ -1,0 +1,70 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model HrInitiative {
+  budget      Budget?  @relation(fields: [budgetId], references: [id])
+  budgetId    String?
+  cost        Float?
+  createdAt   DateTime @default(now())
+  description String?
+  id          String   @id @default(cuid())
+  name        String?
+  updatedAt   DateTime @updatedAt
+}
+
+model Budget {
+  amount        Float?
+  createdAt     DateTime       @default(now())
+  department    String?
+  hrInitiatives HrInitiative[]
+  id            String         @id @default(cuid())
+  updatedAt     DateTime       @updatedAt
+  year          Int?
+}
+
+model EmployeeBenefits {
+  benefitType  String?
+  cost         Float?
+  createdAt    DateTime @default(now())
+  description  String?
+  employeeName String?
+  id           String   @id @default(cuid())
+  updatedAt    DateTime @updatedAt
+}
+
+model Payroll {
+  amount       Float?
+  createdAt    DateTime  @default(now())
+  employeeName String?
+  id           String    @id @default(cuid())
+  paidDate     DateTime?
+  updatedAt    DateTime  @updatedAt
+}
+
+model Role {
+  createdAt DateTime @default(now())
+  id        String   @id @default(cuid())
+  roleName  String?
+  updatedAt DateTime @updatedAt
+  users     User[]
+}
+
+model User {
+  createdAt DateTime @default(now())
+  email     String?  @unique
+  firstName String?
+  id        String   @id @default(cuid())
+  lastName  String?
+  password  String
+  role      Role?    @relation(fields: [roleId], references: [id])
+  roleId    String?
+  roles     Json
+  updatedAt DateTime @updatedAt
+  username  String   @unique
+}
